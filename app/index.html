@@ -1,0 +1,44 @@
+<!doctype html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Auckland Transit</title>
+    <meta name="description" content="Transit app using d3">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//rawgithub.com/Caged/d3-tip/master/examples/example-styles.css">
+    <link rel="stylesheet" href="styles/main.css">
+  </head>
+  <body ng-app="aucklandTransitApp">
+    <div class="jumbotron">
+      <div class="container">
+        <h1>Auckland Transit Data d3.js</h1>
+      </div>
+    </div>
+    <div class="container">
+      <div ng-view></div>
+    </div>
+    <nav class="navbar navbar-default navbar-fixed-bottom" role="navigation">
+      <div class="container">
+        <ul class="nav navbar-nav">
+          <li><a href="#/upload">Upload</a></li>
+          <li><a href="#/d3chart">Chart</a></li>
+          <li><a href="#/sources">Sources</a></li>
+        </ul>
+      </div>
+    </nav>
+    <!-- lib -->
+    <script src="https://cdn.firebase.com/v0/firebase.js"></script>
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.9/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.9/angular-route.min.js"></script>
+    <script src="bower_components/d3-tip/index.js"></script>
+
+    <!-- user scripts -->
+    <script src="scripts/app.js"></script>
+    <script src="scripts/services.js"></script>
+    <script src="scripts/directives.js"></script>
+    <script src="scripts/controllers/upload.js"></script>
+    <script src="scripts/controllers/d3chart.js"></script>
+</body>
+</html>

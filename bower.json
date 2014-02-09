@@ -1,0 +1,7 @@
+{
+  "name": "aucklandTransit",
+  "version": "0.0.0",
+  "dependencies": {
+    "d3-tip": "0.6.3"
+  }
+}

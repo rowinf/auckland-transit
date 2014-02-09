@@ -1,0 +1,2 @@
+agency_id,agency_name,agency_url,agency_timezone,agency_phone,agency_lang
+AT,Auckland Transport,http://www.maxx.co.nz,Pacific/Auckland,(09)355-3553,en

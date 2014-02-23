@@ -64,16 +64,19 @@ angular.module('transit.services', []).
           var shapeRef = _ref.child('shapes');
           var length = responseData.length;
           var rowIndex = 0;
+          // initialize the first shape
           var shape = [];
           var shapeId = -1;
           var stop = $interval(function () {
             var pt = {};
-            // iterate over each row in the data file
+            // iterate over each row in the data file, each row is a point in a particular shape
             var row = responseData[rowIndex].split(',');
             rowIndex = rowIndex + 1;
-            // each value in the row corresponds with the item that was stored in the header row
+            // here i assume that the points for each shape all appear next to each other in the file
+            // this means we just go through each row in the file until the shape id changes and each
+            // point accumulated in the shape array at that point is the complete shape
             if(shapeId != row[0] || rowIndex >= length - 1) {
-              // starting a new shape, so store the old one in firebase
+              // shape id changed, start a new shape, store all points in the current shape array in fb
               if(shape.length > 0 || rowIndex >= length - 1) {
                 shapeRef.child(shapeId + '').set(shape);
                 console.log(shape);
@@ -82,6 +85,7 @@ angular.module('transit.services', []).
               shape = [];
             }
             shapeId = row[0];
+            // each value in the row corresponds with the item that was stored in the header row
             // shape id
             pt[headers[0]] = row[0];
             // latitude

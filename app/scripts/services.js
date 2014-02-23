@@ -5,9 +5,10 @@
 */
 angular.module('transit.services', []).
   factory('transitData', function ($http, FBURL, dataRoot, $interval) {
+    var linebreak = '\r\n';
     var _ref = new Firebase(FBURL);
     function dataToFirebase(data, resource) {
-      var responseData = data.split('\r\n');
+      var responseData = data.split(linebreak);
       var headers = responseData.shift().split(',');
       var dataRef = _ref.child(resource);
       var length = responseData.length;
@@ -57,7 +58,44 @@ angular.module('transit.services', []).
       // uploads data from the shapes data file
       getShapes: function () {
         var promise = $http.get(dataRoot + 'shapes.txt').then(function (response) {
-          return dataToFirebase(response.data, 'shapes');
+          var responseData = response.data.split(linebreak);
+          // get the headers from the first row
+          var headers = responseData.shift().split(',');
+          var shapeRef = _ref.child('shapes');
+          var length = responseData.length;
+          var rowIndex = 0;
+          var shape = [];
+          var shapeId = -1;
+          var stop = $interval(function () {
+            var pt = {};
+            // iterate over each row in the data file
+            var row = responseData[rowIndex].split(',');
+            rowIndex = rowIndex + 1;
+            // each value in the row corresponds with the item that was stored in the header row
+            if(shapeId != row[0] || rowIndex >= length - 1) {
+              // starting a new shape, so store the old one in firebase
+              if(shape.length > 0 || rowIndex >= length - 1) {
+                shapeRef.child(shapeId + '').set(shape);
+                console.log(shape);
+              }
+              // start a new shape
+              shape = [];
+            }
+            shapeId = row[0];
+            // shape id
+            pt[headers[0]] = row[0];
+            // latitude
+            pt[headers[1]] = row[1];
+            // longitude
+            pt[headers[2]] = row[2];
+            // shape point sequence
+            pt[headers[3]] = row[3];
+            shape.push(pt);
+            if(rowIndex >= length - 1) {
+              $interval.cancel(stop);
+            }
+          }, 2);
+          return shapeRef;
         });
         return promise;
       },

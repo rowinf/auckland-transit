@@ -47,9 +47,9 @@ angular.module('transit.upload', ['transit.services'])
       $scope.dataset = [];
       // load the shapes data and render all uploaded json objects in the dom
       transitData.getShapes().then(function (ref) {
-        ref.on('child_added', function (snapshot) {
-          $scope.dataset.push(snapshot.val());
-        });
+        // ref.on('child_added', function (snapshot) {
+        //   $scope.dataset.push(snapshot.val());
+        // });
       });
     }
     $scope.uploadStopTimes = function () {

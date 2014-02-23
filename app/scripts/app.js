@@ -24,6 +24,9 @@ angular.module('aucklandTransitApp', ['ngRoute', 'transit.d3chart', 'transit.upl
       templateUrl: 'views/d3chart.html',
       controller: 'ChartCtrl'
     });
+    $routeProvider.when('/routes', {
+      templateUrl: 'views/route-shapes.html'
+    });
     $routeProvider.when('/sources', {
       templateUrl: 'views/sources.html'
     });

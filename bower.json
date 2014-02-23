@@ -2,6 +2,7 @@
   "name": "aucklandTransit",
   "version": "0.0.0",
   "dependencies": {
-    "d3-tip": "0.6.3"
+    "d3-tip": "0.6.3",
+    "underscore": "1.6.0"
   }
 }

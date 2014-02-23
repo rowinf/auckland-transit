@@ -6,9 +6,10 @@
 * Has directives for transit app
 */
 angular.module('transit.directives', []).
-  directive('busStops', function (FBURL) {
+  directive('busStops', function (FBURL, $interval) {
     return {
-      link: function (scope, elm, attrs) {
+      controller: 'ChartCtrl',
+      link: function (scope, elm, attrs, ctrl) {
         // initialize d3 tooltips
         var tip = d3.tip().attr('class', 'd3-tip').html(function (d) { return d.stop_lat + ', ' + d.stop_lon; });
         // initialize firebase reference
@@ -29,12 +30,20 @@ angular.module('transit.directives', []).
         var scaleByX = function (d) { return xScale(d.stop_lon); }
         // for scaling the longitude of the bus stop to a y coordinate in the screen
         var scaleByY = function (d) { return yScale(d.stop_lat); }
-        _ref.child('stops').on('value', function (snap) {
-          var data = snap.val();
-          var minLat = d3.min(data, function (d) { return d.stop_lat; });
-          var maxLat = d3.max(data, function (d) { return d.stop_lat; });
-          var minLon = d3.min(data, function (d) { return d.stop_lon; });
-          var maxLon = d3.max(data, function (d) { return d.stop_lon; });
+        var data = [];
+        var update = function() {
+          var minLat = d3.min(data, function (d) {
+            return d.stop_lat;
+          });
+          var maxLat = d3.max(data, function (d) {
+            return d.stop_lat;
+          });
+          var minLon = d3.min(data, function (d) {
+            return d.stop_lon;
+          });
+          var maxLon = d3.max(data, function (d) {
+            return d.stop_lon;
+          });
           xScale.domain([minLon, maxLon]);
           yScale.domain([minLat, maxLat]);
           svg.selectAll('circle').remove();
@@ -46,7 +55,28 @@ angular.module('transit.directives', []).
             .attr('r', radius)
             .on('mouseover', tip.show)
             .on('mouseout', tip.hide);
+        }
+        scope.refresh = function() {
+          data = [];
+          _ref.child('stops').once('value', function (snap) {
+            data = snap.val();
+            update();
+          });
+        };
+        scope.reanimate = function () {
+          data = [];
+          _ref.child('stops').on('child_added', function (snap) {
+            data.push(snap.val());
+          });
+          $interval(function() {
+            update();
+          }, 200);
+        };
+        _ref.child('stops').once('value', function (snap) {
+          data = snap.val();
+          update();
         });
+        ctrl.setChart(scope);
       }
     }
   });
